@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace TheatricalPlayersRefactoringKata
 {
@@ -10,7 +11,8 @@ namespace TheatricalPlayersRefactoringKata
         {
             var totalAmount = 0;
             var volumeCredits = 0;
-            var result = string.Format("Statement for {0}\n", invoice.Customer);
+            
+            var resultStringBuilder = new StringBuilder($"Statement for {invoice.Customer}\n");
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
             foreach (var perf in invoice.Performances)
@@ -22,12 +24,12 @@ namespace TheatricalPlayersRefactoringKata
                 volumeCredits += CalculateVolumeCredits(play.Type, perf.Audience);
 
                 // print line for this order
-                result += OutputOrderFormat(cultureInfo, play, thisAmount, perf);
+                resultStringBuilder.Append(OutputOrderFormat(cultureInfo, play, thisAmount, perf));
                 totalAmount += thisAmount;
             }
-            result += string.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
-            result += string.Format("You earned {0} credits\n", volumeCredits);
-            return result;
+            resultStringBuilder.Append(string.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100)));
+            resultStringBuilder.Append(string.Format("You earned {0} credits\n", volumeCredits));
+            return resultStringBuilder.ToString();
         }
 
         private static string OutputOrderFormat(CultureInfo cultureInfo, Play play, int thisAmount, Performance perf)
